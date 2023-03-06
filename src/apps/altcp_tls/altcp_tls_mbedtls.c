@@ -93,6 +93,9 @@
 #define ALTCP_MBEDTLS_RNG_FN   mbedtls_entropy_func
 #endif
 
+/* For Pico */
+mbedtls_pq_performance performance;
+
 /* Variable prototype, the actual declaration is at the end of this file
    since it contains pointers to static functions declared here */
 extern const struct altcp_functions altcp_mbedtls_functions;
@@ -630,6 +633,11 @@ altcp_mbedtls_setup(void *conf, struct altcp_pcb *conn, struct altcp_pcb *inner_
     altcp_mbedtls_free(conf, state);
     return ERR_MEM;
   }
+  /* Only for Pico performance */
+#if defined(MBEDTLS_PICO_LATENCY)||\
+    defined(MBEDTLS_PICO_CYCLES)
+  state->ssl_context.performance = &performance;
+#endif
   /* tell mbedtls about our I/O functions */
   mbedtls_ssl_set_bio(&state->ssl_context, conn, altcp_mbedtls_bio_send, altcp_mbedtls_bio_recv, NULL);
 
@@ -1328,6 +1336,10 @@ altcp_mbedtls_dealloc(struct altcp_pcb *conn)
       conn->state = NULL;
     }
   }
+}
+
+mbedtls_pq_performance get_mbedtls_pq_performance(){
+  return performance;
 }
 
 const struct altcp_functions altcp_mbedtls_functions = {

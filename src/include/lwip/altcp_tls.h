@@ -186,7 +186,7 @@ err_t altcp_tls_set_session(struct altcp_pcb *conn, struct altcp_tls_session *fr
  * Real type depends on port (e.g. mbedtls use mbedtls_ssl_session)
  */
 void altcp_tls_free_session(struct altcp_tls_session *dest);
-
+mbedtls_pq_performance get_mbedtls_pq_performance();
 #ifdef __cplusplus
 }
 #endif
